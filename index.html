@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Prompts — The Complete Categorized Library</title>
+<style>
+:root{
+  --bg:#161514; --bg2:#1f1e1c; --bg3:#262422; --line:#33302d;
+  --ink:#ece7e0; --ink2:#a89f94; --ink3:#7a7268;
+  --acc:#c15f3c; --acc2:#d97a55; --accbg:rgba(193,95,60,.12);
+  --code:#f0e9df; --good:#7fb069; --shadow:rgba(0,0,0,.4);
+}
+[data-theme="light"]{
+  --bg:#faf6f0; --bg2:#ffffff; --bg3:#f2ece3; --line:#e4dcd0;
+  --ink:#2a2724; --ink2:#6b6258; --ink3:#9a9082;
+  --acc:#b5532f; --acc2:#c15f3c; --accbg:rgba(193,95,60,.09);
+  --code:#3a352f; --good:#4a7a3a; --shadow:rgba(60,40,20,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;transition:background .25s,color .25s}
+button{font-family:inherit;cursor:pointer}
+
+/* layout */
+.app{display:grid;grid-template-columns:268px 1fr;min-height:100vh}
+
+/* sidebar */
+.side{background:var(--bg2);border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;scrollbar-width:thin}
+.brand{padding:6px 10px 18px}
+.brand .k{display:inline-block;background:var(--acc);color:#fff;font-size:10px;font-weight:700;letter-spacing:.14em;padding:3px 8px;border-radius:4px;text-transform:uppercase}
+.brand h1{font-size:19px;font-weight:800;margin-top:10px;letter-spacing:-.01em}
+.brand h1 em{color:var(--acc2);font-style:normal}
+.brand p{font-size:12px;color:var(--ink3);margin-top:4px}
+.nav button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:none;color:var(--ink2);padding:8px 10px;border-radius:8px;font-size:13.5px;transition:background .12s,color .12s}
+.nav button:hover{background:var(--bg3);color:var(--ink)}
+.nav button.on{background:var(--accbg);color:var(--acc2);font-weight:600}
+.nav .ic{width:18px;text-align:center;flex-shrink:0}
+.nav .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav .ct{font-size:11px;color:var(--ink3);background:var(--bg3);border-radius:10px;padding:1px 7px;flex-shrink:0}
+.nav button.on .ct{background:var(--acc);color:#fff}
+.nav .sec{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);padding:16px 10px 6px}
+
+/* main */
+.main{min-width:0;padding:0 28px 60px}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:18px 0 12px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:200px;position:relative}
+.search input{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 36px 10px 38px;font-size:14px;outline:none;transition:border .15s}
+.search input:focus{border-color:var(--acc)}
+.search .mg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:14px;pointer-events:none}
+.search .kb{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--ink3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;pointer-events:none}
+.pill{background:var(--bg2);border:1px solid var(--line);color:var(--ink2);border-radius:10px;padding:9px 13px;font-size:13px;transition:all .12s}
+.pill:hover{color:var(--ink);border-color:var(--ink3)}
+.pill.on{background:var(--accbg);border-color:var(--acc);color:var(--acc2);font-weight:600}
+
+/* hero / intro */
+.hero{padding:26px 0 4px}
+.hero h2{font-size:24px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.hero h2 .hic{font-size:22px}
+.hero .sub{color:var(--ink2);margin-top:6px;max-width:760px;font-size:14px}
+.hero .rc{color:var(--ink3);font-size:12.5px;margin-top:10px}
+.howto{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.howto>button{width:100%;background:none;border:none;color:var(--ink2);text-align:left;padding:12px 16px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.howto>button:hover{color:var(--ink)}
+.howto .body{display:none;padding:2px 18px 16px;color:var(--ink2);font-size:13.5px}
+.howto.open .body{display:block}
+.howto .body h4{color:var(--ink);font-size:13px;margin:12px 0 4px}
+.howto .body .ph{color:var(--acc2);background:var(--accbg);border-radius:4px;padding:0 5px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+.howto .body ol{margin:4px 0 0 18px}
+.howto .body li{margin:3px 0}
+
+/* grid + cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;padding-top:20px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;transition:border .15s,transform .15s,box-shadow .15s;position:relative}
+.card:hover{border-color:var(--ink3);transform:translateY(-2px);box-shadow:0 8px 24px var(--shadow)}
+.card .hd{display:flex;align-items:flex-start;gap:8px}
+.card .num{font-size:11px;font-weight:700;color:var(--ink3);font-family:ui-monospace,Menlo,Consolas,monospace;padding-top:3px;flex-shrink:0}
+.card h3{font-size:15.5px;font-weight:700;letter-spacing:-.01em;flex:1}
+.card .fav{background:none;border:none;font-size:17px;color:var(--ink3);line-height:1;padding:2px;transition:color .12s,transform .12s;flex-shrink:0}
+.card .fav:hover{transform:scale(1.2)}
+.card .fav.on{color:var(--acc2)}
+.card .use{font-size:12.5px;color:var(--ink2)}
+.card .use b{color:var(--acc2);font-weight:600}
+.card .px{background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:8px;padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.6;color:var(--code);white-space:pre-wrap;word-break:break-word;flex:1}
+[data-theme="light"] .card .px{background:var(--bg3)}
+.card .px .tok{color:var(--acc2);background:var(--accbg);border-radius:4px;padding:0 3px;font-weight:600}
+.card .ft{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.card .tag{font-size:11px;color:var(--ink3);background:var(--bg3);border:none;border-radius:6px;padding:3px 8px;transition:all .12s}
+.card .tag:hover{color:var(--acc2);background:var(--accbg)}
+.card .lv{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 7px}
+.card .lv.b{color:var(--good);background:rgba(127,176,105,.12)}
+.card .lv.p{color:var(--acc2);background:var(--accbg)}
+.card .cp{margin-left:auto;background:var(--acc);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;transition:background .12s,transform .08s}
+.card .cp:hover{background:var(--acc2)}
+.card .cp:active{transform:scale(.96)}
+.card .cp.ok{background:var(--good)}
+mark{background:var(--accbg);color:var(--acc2);border-radius:3px;padding:0 1px}
+
+/* empty + misc */
+.empty{text-align:center;color:var(--ink3);padding:80px 20px;grid-column:1/-1}
+.empty .e1{font-size:34px;margin-bottom:10px}
+.count{font-size:12.5px;color:var(--ink3);white-space:nowrap}
+.menu-btn{display:none}
+.footer{margin-top:46px;border-top:1px solid var(--line);padding-top:18px;color:var(--ink3);font-size:12.5px;text-align:center}
+.footer b{color:var(--ink2)}
+
+/* mobile */
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:0;width:280px;z-index:20;transform:translateX(-100%);transition:transform .22s;box-shadow:8px 0 30px var(--shadow)}
+  .side.open{transform:translateX(0)}
+  .menu-btn{display:inline-flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:10px;width:40px;height:40px;font-size:17px}
+  .main{padding:0 16px 60px}
+  .grid{grid-template-columns:1fr}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:15;display:none}
+  .scrim.on{display:block}
+}
+</style>
+</head>
+<body>
+<div class="scrim" id="scrim" onclick="toggleMenu(false)"></div>
+<div class="app">
+  <aside class="side" id="side">
+    <div class="brand">
+      <span class="k">2026 Edition</span>
+      <h1>Claude Code <em>Prompts</em></h1>
+      <p>The complete categorized library</p>
+    </div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <button class="menu-btn" onclick="toggleMenu()" aria-label="Menu">☰</button>
+      <div class="search">
+        <span class="mg">⌕</span>
+        <input id="q" type="text" placeholder="Search prompts, tags, situations…" autocomplete="off">
+        <span class="kb">/</span>
+      </div>
+      <button class="pill" id="lvAll" onclick="setLevel('all')">All levels</button>
+      <button class="pill" id="lvB" onclick="setLevel('b')">Beginner</button>
+      <button class="pill" id="lvP" onclick="setLevel('p')">Pro</button>
+      <button class="pill" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">☾</button>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="hero">
+      <h2 id="heroTitle"></h2>
+      <p class="sub" id="heroSub"></p>
+      <p class="rc" id="heroMeta"></p>
+      <div class="howto" id="howto">
+        <button onclick="document.getElementById('howto').classList.toggle('open')">❖ How to use this library <span>▾</span></button>
+        <div class="body">
+          <h4>1. Placeholders</h4>
+          Anything in <span class="ph">[brackets]</span> is yours to replace — <span class="ph">[file]</span>, <span class="ph">[feature]</span>, <span class="ph">[error]</span>. Copy the prompt, fill the brackets, send. Placeholders are highlighted in every card so you can spot them instantly.
+          <h4>2. The three rules that make any prompt work better</h4>
+          <ol>
+            <li><b>Context:</b> tell Claude what it can't infer — link files, paste errors, name constraints.</li>
+            <li><b>Constraints:</b> say what NOT to do ("don't refactor while you're here") — scope discipline is quality.</li>
+            <li><b>Verification:</b> demand proof — failing test first, test run after, screenshot, diff summary.</li>
+          </ol>
+          <h4>3. Beginner vs Pro</h4>
+          <b>Beginner</b> prompts work anywhere with no setup. <b>Pro</b> prompts assume things like plan mode, subagents, hooks, worktrees, or MCP — the deeper Claude Code toolkit.
+          <h4>4. Make them yours</h4>
+          ★ favorite the ones you reuse (saved in your browser), and turn any prompt you use three times into a custom slash command.
+        </div>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="footer">Part of the <b>How to Use Claude Code Effectively</b> series · 207 prompts · 12 categories · Works offline — this file is the whole app</div>
+  </main>
+</div>
+<script>
+window.PROMPTS = (window.PROMPTS || []).concat([
+// ── Category 1: Codebase Onboarding & Understanding ──
+{c:"onboarding",t:"The grand tour",u:"First session in any unfamiliar repo.",x:"Give me a tour of this codebase: the main modules, where execution starts, how the pieces talk to each other, and what a new engineer would find surprising. Keep it under a page.",g:["explore","architecture"],l:"b"},
+{c:"onboarding",t:"Trace a feature end-to-end",u:"Understand how one feature actually works before touching it.",x:"Explain how [feature] works end-to-end. Trace the path through the actual files and functions, naming each one in order, from entry point to side effects.",g:["explore","trace"],l:"b"},
+{c:"onboarding",t:"Generate CLAUDE.md",u:"Right after cloning — the first command worth running.",x:"/init\n\nThen review the generated CLAUDE.md with me section by section: flag anything you inferred but aren't sure about, and ask me the three questions whose answers would most improve it.",g:["claude-md","setup"],l:"b"},
+{c:"onboarding",t:"Hotspot risk map",u:"Find where the danger lives before you start changing things.",x:"What are the ten most-changed files in this repo over the past year (use git log)? For each, say what it does and what the churn suggests about hotspots, fragility, and risk.",g:["git","risk"],l:"p"},
+{c:"onboarding",t:"The surprise audit",u:"Surface the landmines the README never mentions.",x:"Read this codebase skeptically. List every convention, hack, or architectural decision that would surprise a senior engineer joining the team — and where each one lives.",g:["explore","risk"],l:"p"},
+{c:"onboarding",t:"Dependency reality check",u:"Know what you actually depend on.",x:"List our direct dependencies grouped by purpose. Flag any that are deprecated, unmaintained, duplicated in function, or pinned to a version more than one major behind.",g:["dependencies","audit"],l:"b"},
+{c:"onboarding",t:"Data model in one page",u:"Orient on the domain before reading any logic.",x:"Map the core data model: main entities, their fields that matter, and the relationships between them. Render it as a Mermaid ER diagram plus three sentences of commentary.",g:["architecture","diagram"],l:"b"},
+{c:"onboarding",t:"Where does [thing] happen?",u:"Targeted lookup when you know what but not where.",x:"Where does [behavior, e.g. \"price calculation\"] happen in this codebase? Show me every relevant file:line, then explain which one is the source of truth and which are consumers.",g:["explore","trace"],l:"b"},
+{c:"onboarding",t:"Pattern census",u:"Find every instance of a pattern before changing it.",x:"Find every place we [pattern, e.g. \"construct SQL by string concatenation\"]. List file:line for each, grouped by module, and note any that look inconsistent with the rest.",g:["explore","audit"],l:"b"},
+{c:"onboarding",t:"Architecture decision archaeology",u:"Understand why the code is shaped the way it is.",x:"Using git history and code comments, reconstruct why we [architectural choice, e.g. \"split the API into two services\"]. Cite the commits or comments that support your reconstruction, and say where you're guessing.",g:["git","architecture"],l:"p"},
+{c:"onboarding",t:"Test coverage truth",u:"Learn what the safety net actually covers.",x:"Which critical paths in this codebase have no test coverage? Rank the top five by blast radius if they broke silently, and point at the untested code.",g:["testing","risk"],l:"p"},
+{c:"onboarding",t:"Config and env map",u:"Stop guessing which env vars matter.",x:"List every environment variable and config flag this app reads, where each is read, what it controls, and which ones are required vs optional. Flag any that are read but never documented.",g:["config","audit"],l:"b"},
+{c:"onboarding",t:"The execution path quiz",u:"Verify your own mental model after a tour.",x:"I'll describe my understanding of how [flow] works; correct me precisely where I'm wrong. Here it is: [your understanding].",g:["explore","learning"],l:"b"},
+{c:"onboarding",t:"Module deep-dive report",u:"Delegate the reading; receive a briefing.",x:"Read everything under [directory] and write a one-page briefing: responsibilities, public interface, internal structure, key invariants, and the two riskiest assumptions baked into it.",g:["explore","subagent"],l:"p"},
+{c:"onboarding",t:"Onboarding doc generator",u:"Turn your orientation session into an artifact for the team.",x:"Based on everything you've learned about this repo this session, write docs/onboarding.md: setup, architecture in five paragraphs, where things live, conventions, and gotchas. Verify the setup steps by actually running them.",g:["docs","artifact"],l:"b"},
+{c:"onboarding",t:"Compare against best practice",u:"Calibrate how unusual this codebase really is.",x:"Compare how this repo handles [concern, e.g. \"error handling\"] against current best practice for [stack]. What's standard, what's idiosyncratic, and what's actively risky?",g:["audit","architecture"],l:"p"},
+{c:"onboarding",t:"Dead code sweep",u:"Estimate how much of the repo is actually alive.",x:"Identify code that appears unused: unexported helpers nobody calls, routes with no callers, feature-flagged paths where the flag is permanently off. List candidates with evidence; do not delete anything yet.",g:["cleanup","audit"],l:"p"},
+
+// ── Category 2: Planning & Architecture ──
+{c:"planning",t:"Plan-mode feature kickoff",u:"Start anything bigger than a one-liner here.",x:"[Plan mode] Research how [area] works today, then propose two implementation approaches for [goal] with trade-offs (complexity, risk, performance, migration path). Recommend one and justify it.",g:["plan-mode","design"],l:"b"},
+{c:"planning",t:"Externalize the plan",u:"Immediately after agreeing on any plan.",x:"Write the plan we just agreed on to docs/plans/[name].md: numbered steps with checkboxes, the definition of done for each step, and the decisions we made with their reasons.",g:["plan-mode","artifact"],l:"b"},
+{c:"planning",t:"Red-team the plan",u:"Before executing any plan you care about.",x:"Poke holes in this plan: what's underspecified, what assumptions could be wrong, what will bite us in six months, and what's the riskiest step? Don't be polite.",g:["design","critique"],l:"p"},
+{c:"planning",t:"Aggressive scope cut",u:"When the feature feels too big for the deadline.",x:"What's the smallest version of [feature] that ships real value? Cut scope aggressively: list what's in, what's deferred, and what's deleted forever. Then estimate the cut version in plan steps.",g:["scope","design"],l:"b"},
+{c:"planning",t:"Build vs buy vs boring",u:"Before adding a dependency or building infrastructure.",x:"For [capability], compare: (a) the boring solution with what we already have, (b) the best library, (c) building it. Cost, risk, and maintenance burden for each. Default to boring unless something disqualifies it.",g:["design","dependencies"],l:"p"},
+{c:"planning",t:"Interface-first design",u:"Pin the contract before any implementation.",x:"Before implementing [feature], design only the interfaces: types, function signatures, API shapes, and error cases. Show me; we'll iterate on the contract before writing any bodies.",g:["design","api"],l:"p"},
+{c:"planning",t:"Migration plan with rollback",u:"Any change touching data or live traffic.",x:"Plan the migration for [change]: phases, what runs in parallel, how we verify each phase, and — critically — the rollback procedure at every phase. No phase may be irreversible without my sign-off.",g:["migration","risk"],l:"p"},
+{c:"planning",t:"Spike, then decide",u:"When you can't choose between approaches on paper.",x:"Time-box a spike: implement the riskiest 10% of both approach A [describe] and approach B [describe] as throwaway code. Report what you learned and which approach the evidence favors. We will delete the spikes.",g:["design","experiment"],l:"p"},
+{c:"planning",t:"Edge-case inventory upfront",u:"Before implementation, not after the bug report.",x:"For [feature], list every edge case and failure mode you can think of: empty states, concurrency, partial failures, malicious input, scale. Mark which ones the plan handles and which we're consciously punting on.",g:["design","risk"],l:"b"},
+{c:"planning",t:"Estimate by decomposition",u:"When someone asks 'how long will this take?'",x:"Decompose [feature] into independently shippable steps of at most half a day each. For each: what it touches, how we verify it, and what could blow up the estimate. Flag the steps with the most uncertainty.",g:["scope","plan-mode"],l:"b"},
+{c:"planning",t:"Architecture decision record",u:"Capture a decision while the reasoning is fresh.",x:"Write an ADR for the decision to [decision]: context, options considered, decision, consequences (good and bad), and revisit conditions. Save it to docs/adr/[number]-[slug].md.",g:["artifact","architecture"],l:"p"},
+{c:"planning",t:"Performance budget first",u:"Before building anything latency- or cost-sensitive.",x:"Before we build [feature], set its performance budget: acceptable latency, memory, and cost at [expected scale]. Then evaluate the proposed design against that budget and flag the components most likely to bust it.",g:["performance","design"],l:"p"},
+{c:"planning",t:"API design review",u:"Before exposing any new public endpoint or interface.",x:"Review this proposed API [paste or point at file] as if you'll have to support it for five years: naming, consistency with our existing endpoints, error semantics, versioning, and what callers will inevitably misuse.",g:["api","critique"],l:"p"},
+{c:"planning",t:"Refactor-or-rewrite call",u:"Facing a gnarly legacy module.",x:"For [module]: assess whether to refactor incrementally or rewrite. Evidence required: test coverage, change frequency, defect history from git, coupling. Give a recommendation with a confidence level.",g:["refactor","risk"],l:"p"},
+{c:"planning",t:"Parallel workstream split",u:"Setting up multi-session or multi-agent work.",x:"Split the plan in docs/plans/[name].md into independent workstreams that won't touch the same files. For each: scope, branch name, and merge order. Flag any step that must be serialized.",g:["subagent","worktree"],l:"p"},
+{c:"planning",t:"Pre-mortem",u:"One message that prevents entire categories of failure.",x:"Assume it's three months from now and [project] failed badly. Write the post-mortem: what went wrong, what early signals we ignored, and what we should change in the plan today to prevent it.",g:["risk","critique"],l:"b"},
+{c:"planning",t:"Requirements interrogation",u:"When the ticket is vague and you know it.",x:"Here's the ticket: [paste]. Before any design, list every question whose answer would change the implementation, sorted by impact. Suggest your best-guess answer for each so I can confirm or correct quickly.",g:["scope","design"],l:"b"},
+
+// ── Category 3: Implementation & Feature Building ──
+{c:"implementation",t:"One step, then stop",u:"The core delegation pattern for executing a plan.",x:"Implement step [N] of docs/plans/[name].md — only that step. Run [test command] when done, show me the diff summary, and stop for my review before touching anything else.",g:["delegation","plan-mode"],l:"b"},
+{c:"implementation",t:"TDD loop",u:"Any logic with verifiable behavior.",x:"Write failing tests for [behavior] first — show me they fail. Then implement until green. Do not modify the tests to make them pass; if a test seems wrong, stop and tell me.",g:["tdd","testing"],l:"b"},
+{c:"implementation",t:"Match the house style",u:"Adding anything to an established codebase.",x:"Implement [feature]. Before writing code, find the most similar existing implementation in this repo and follow its patterns exactly: structure, naming, error handling, test layout. Point me at the file you used as the model.",g:["conventions","delegation"],l:"b"},
+{c:"implementation",t:"UI from a mock",u:"You have a screenshot or design file.",x:"[Attach image] Implement this design as [component]. Match spacing, typography, and states. Then screenshot the result, compare against the mock, and iterate until they match. List any deliberate deviations.",g:["frontend","visual"],l:"b"},
+{c:"implementation",t:"The boring-solution constraint",u:"Prepend to any task where over-engineering is a risk.",x:"Implement [task]. Constraints: prefer the boring solution; no new dependencies; no new abstractions unless used at least three times; if you're tempted to build a framework, don't.",g:["simplicity","constraints"],l:"b"},
+{c:"implementation",t:"Error handling pass",u:"After the happy path works.",x:"The happy path for [feature] works. Now do a dedicated error-handling pass: every external call, every parse, every assumption. Errors must be actionable — what failed, why, what the user/operator should do.",g:["errors","quality"],l:"b"},
+{c:"implementation",t:"Feature flag wrap",u:"Shipping risky changes safely.",x:"Implement [feature] behind a feature flag [flag-name], default off. The off path must be exactly the current behavior — prove it by running the existing tests with the flag off.",g:["flags","risk"],l:"p"},
+{c:"implementation",t:"Parallel-safe scaffolding",u:"Starting a feature another agent/session will continue.",x:"Scaffold [feature]: files, types, wiring, and TODO-marked stubs with precise comments on what each stub must do, its inputs/outputs, and its edge cases — so another session can implement any stub without extra context.",g:["scaffold","subagent"],l:"p"},
+{c:"implementation",t:"Make it work → right → fast",u:"Explicitly sequencing quality passes.",x:"Implement [task] in three labeled passes with my review between each: (1) make it work — ugly is fine; (2) make it right — structure, naming, tests; (3) make it fast — only what profiling justifies.",g:["quality","performance"],l:"p"},
+{c:"implementation",t:"Data layer first",u:"Features that touch persistence.",x:"For [feature], implement bottom-up: schema/migration first, then the data access layer with tests against a real test DB, then business logic, then the API. Stop after each layer for review.",g:["database","delegation"],l:"p"},
+{c:"implementation",t:"Integrate with the weird thing",u:"Working against a poorly documented API or system.",x:"We need to integrate with [system]. First write a tiny throwaway script that hits it for real and prints raw responses for the cases we care about — run it, show me the output — then design the integration from observed behavior, not docs.",g:["integration","experiment"],l:"p"},
+{c:"implementation",t:"Accessibility pass",u:"Any user-facing UI work.",x:"Do an accessibility pass on [component/page]: keyboard navigation, focus management, ARIA where semantics aren't native, contrast, and screen-reader labels. List each fix as you make it.",g:["frontend","a11y"],l:"b"},
+{c:"implementation",t:"Idempotency audit",u:"Anything that retries, queues, or processes events.",x:"Review [handler/job] for idempotency: what happens if it runs twice, partially fails, or processes out of order? Fix the gaps and add a test that runs it twice and asserts identical outcomes.",g:["reliability","quality"],l:"p"},
+{c:"implementation",t:"Copy the proven pattern",u:"The second instance of anything.",x:"We already do [pattern] in [file]. Implement [new instance] the same way — same structure, same tests — adapted for [differences]. If the pattern doesn't fit, stop and explain instead of forcing it.",g:["conventions","scaffold"],l:"b"},
+{c:"implementation",t:"Long-task checkpoint protocol",u:"Tasks that will outlive your attention span.",x:"This is a long task. Work in checkpoints: after each meaningful unit, commit with a descriptive message, append one line to docs/plans/[name].md progress log, and continue. If anything ambiguous comes up, stop and ask rather than guessing.",g:["delegation","autonomy"],l:"p"},
+{c:"implementation",t:"Compatibility shim",u:"Changing an interface that has existing callers.",x:"Change [interface] to [new shape], but keep every existing caller working via a deprecation shim. List all call sites, migrate the three highest-traffic ones now, and leave TODO markers with the migration recipe on the rest.",g:["refactor","api"],l:"p"},
+{c:"implementation",t:"The contractor's estimate check",u:"Before accepting a large generated diff.",x:"Before I review this diff: summarize what you changed and why in five bullets, list anything you did beyond what I asked, and flag the part you're least confident about.",g:["review","delegation"],l:"b"}
+]);
+
+window.PROMPTS = (window.PROMPTS || []).concat([
+// ── Category 4: Debugging & Root-Cause Analysis ──
+{c:"debugging",t:"Reproduce before fixing",u:"The single highest-value debugging rule, as a prompt.",x:"Here's the bug: [paste error/report]. Before changing any code, write a failing test or script that reproduces it. Show me the failing output. Only then propose the fix.",g:["reproduce","discipline"],l:"b"},
+{c:"debugging",t:"Ranked hypotheses",u:"When the cause isn't obvious.",x:"The bug only happens when [condition]. List three candidate root causes ranked by likelihood, with the specific evidence in the code that supports or undermines each. Investigate #1 first; don't fix anything yet.",g:["hypothesis","rca"],l:"b"},
+{c:"debugging",t:"Targeted logging probe",u:"When reading the code isn't revealing the cause.",x:"Add targeted logging around [area], run the reproduction, and tell me what the logs reveal about where reality diverges from expectation. Remove the logging once we've found the cause.",g:["logging","experiment"],l:"b"},
+{c:"debugging",t:"git bisect runner",u:"It worked before; you don't know what broke it.",x:"The behavior was correct at [ref] and is broken at HEAD. Run git bisect with [test command or reproduction script] as the verdict, find the breaking commit, and explain why that change caused it.",g:["git","bisect"],l:"p"},
+{c:"debugging",t:"The minimal fix",u:"After the root cause is confirmed.",x:"Root cause confirmed: [cause]. Implement the smallest fix that makes the reproduction pass. Do not refactor, rename, or improve anything else while you're in there — list temptations you resisted as TODOs instead.",g:["fix","discipline"],l:"b"},
+{c:"debugging",t:"Heisenbug protocol",u:"Intermittent failures that vanish under observation.",x:"[Bug] is intermittent. Make it deterministic: identify the sources of nondeterminism (timing, ordering, shared state, randomness), then force each one in a test harness until the failure reproduces every run.",g:["flaky","reproduce"],l:"p"},
+{c:"debugging",t:"Stack-trace triage",u:"Paste-and-go for production errors.",x:"Here's a production stack trace: [paste]. Map it to our code, explain the chain of events that produced it, and identify what input or state must have existed for this path to execute.",g:["production","rca"],l:"b"},
+{c:"debugging",t:"Diff-the-environments",u:"Works locally, fails in CI/staging/prod.",x:"This works locally but fails in [environment]: [failure]. Enumerate every difference that could matter — versions, env vars, data, permissions, concurrency, network — and design the fastest check to confirm or eliminate each.",g:["environment","hypothesis"],l:"p"},
+{c:"debugging",t:"Five whys, with receipts",u:"Going from symptom to systemic cause.",x:"We fixed [bug], but I want the systemic cause. Run five-whys on it, but every 'why' must cite actual code, config, or process evidence — no speculation. End with one process change that would have prevented it.",g:["rca","postmortem"],l:"p"},
+{c:"debugging",t:"Performance regression hunt",u:"It got slow and nobody knows when.",x:"[Operation] has gotten slow. Profile it now, find or create a benchmark, then use git history to locate when it regressed. Report: current bottleneck, the regressing change if found, and the fix options with expected gains.",g:["performance","bisect"],l:"p"},
+{c:"debugging",t:"Memory leak stakeout",u:"Gradual resource growth.",x:"Memory grows over time in [process]. Set up a measurement harness, take heap snapshots under load, diff them, and identify what's accumulating and who's retaining it. Evidence first, fix second.",g:["performance","memory"],l:"p"},
+{c:"debugging",t:"Race condition autopsy",u:"Concurrency bugs you can smell but can't see.",x:"I suspect a race in [area]. Map every piece of shared state and its access points, identify unsynchronized read-write pairs, and construct a test that forces the interleaving to prove it.",g:["concurrency","reproduce"],l:"p"},
+{c:"debugging",t:"The fresh-eyes restatement",u:"You've been stuck for 30+ minutes.",x:"Forget our previous theories. Restate the problem from scratch: what we observe, what we expect, what we've ruled out with evidence, and what we've merely assumed. Then list the assumptions we never actually tested.",g:["hypothesis","discipline"],l:"b"},
+{c:"debugging",t:"Error-message upgrade",u:"Turn a painful debugging session into prevention.",x:"This bug took ages to diagnose because the error was unhelpful. Find every place in [module] where a failure produces a vague error, and rewrite each message to include: what failed, the relevant values, and the likely fix.",g:["errors","prevention"],l:"b"},
+{c:"debugging",t:"Data corruption tracer",u:"Bad data appeared; find the writer.",x:"Records like [example] are corrupted. Find every code path that writes those fields, evaluate which could have produced this exact shape of bad data, and check timestamps/logs to identify when it started.",g:["database","rca"],l:"p"},
+{c:"debugging",t:"Dependency-update breakage",u:"It broke after an upgrade.",x:"[Thing] broke after upgrading [dependency] from [old] to [new]. Read the changelog and migration notes between those versions, match the symptoms against the documented changes, and apply the prescribed migration — not a workaround.",g:["dependencies","fix"],l:"b"},
+{c:"debugging",t:"Post-fix blast radius",u:"Before shipping any non-trivial fix.",x:"Before we ship this fix: what else uses the code path we changed? Run the tests for every consumer, and tell me what behavior changed for them — even improvements. No silent side effects.",g:["fix","risk"],l:"b"},
+
+// ── Category 5: Testing & Quality ──
+{c:"testing",t:"Failing tests first",u:"The default for any new behavior.",x:"Write the tests for [behavior] before any implementation: happy path, each edge case, each failure mode. Run them, show me they fail for the right reasons, then stop for my review of the test names alone.",g:["tdd","discipline"],l:"b"},
+{c:"testing",t:"Edge-case gauntlet",u:"After any feature looks 'done'.",x:"What edge cases does [change] not handle? Think adversarially: empty, null, huge, duplicate, concurrent, malformed, unauthorized, slow. Write tests for the two most damaging gaps and show me whether they pass.",g:["edge-cases","quality"],l:"b"},
+{c:"testing",t:"Characterization safety net",u:"Before touching scary legacy code.",x:"Before we modify [module], write characterization tests that pin down its current behavior — including behavior that looks like a bug. Mark suspected bugs with comments, but the tests must assert what IS, not what should be.",g:["legacy","safety"],l:"p"},
+{c:"testing",t:"Coverage gap analysis",u:"Spending a test budget where it matters.",x:"Run coverage on [module]. Don't chase the percentage: identify the three uncovered paths with the highest blast radius if they silently broke, and write meaningful tests for those only.",g:["coverage","strategy"],l:"p"},
+{c:"testing",t:"Flaky test eradication",u:"The suite cried wolf again.",x:"[Test] is flaky. Run it 50 times to measure the failure rate, find the nondeterminism (timing, ordering, shared state, external calls), and fix the cause. Re-run 50 times to prove it. Do not add retries or sleeps.",g:["flaky","discipline"],l:"p"},
+{c:"testing",t:"Test quality review",u:"Tests that pass aren't necessarily tests that protect.",x:"Review the tests in [file] skeptically: which would still pass if the implementation were wrong? Look for assertions that are too weak, mocks that assume the answer, and tests coupled to implementation detail. Fix the worst three.",g:["quality","critique"],l:"p"},
+{c:"testing",t:"Property-based upgrade",u:"Logic with algebraic structure (parsers, money, dates).",x:"[Function] is example-tested only. Identify its invariants (round-trips, ordering, bounds, idempotency) and add property-based tests for them. If a property fails, investigate whether it's the test or a real bug before changing anything.",g:["property","quality"],l:"p"},
+{c:"testing",t:"Integration over mocks",u:"When mock-heavy tests keep lying.",x:"The tests for [feature] mock so much they test nothing. Rewrite the critical paths as integration tests against real [DB/queue/etc] in a test container. Keep unit tests only where logic is genuinely isolated.",g:["integration","strategy"],l:"p"},
+{c:"testing",t:"Regression test from bug",u:"Every fixed bug should leave a tripwire.",x:"We just fixed [bug]. Add a regression test that: fails on the old code (verify against the pre-fix commit), passes now, and has a comment linking the incident/issue. Name it so future readers understand what it guards.",g:["regression","discipline"],l:"b"},
+{c:"testing",t:"Test speed audit",u:"When the suite is slow enough that people skip it.",x:"Our test suite takes [time]. Profile it: top ten slowest tests, why each is slow (setup? IO? sleeps?), and fixes that preserve what each test actually protects. Target: fast enough to run on every change.",g:["performance","strategy"],l:"p"},
+{c:"testing",t:"The 'do not touch tests' clause",u:"Append to any implementation task.",x:"Constraint for this task: you may not modify existing tests. If a test fails, the code is wrong or the test was already wrong — in the second case, stop and show me the test with your reasoning before touching it.",g:["discipline","constraints"],l:"b"},
+{c:"testing",t:"Snapshot sanity",u:"Snapshot tests that rubber-stamp everything.",x:"Audit our snapshot tests: which ones are so broad that any change auto-passes review? Replace the worst offenders with targeted assertions on the properties that actually matter.",g:["quality","frontend"],l:"p"},
+{c:"testing",t:"Boundary-value sweep",u:"Numeric and size limits.",x:"For [function/endpoint], test the boundaries: zero, one, max, max+1, negative, fractional where unexpected, and unicode/emoji where strings. Table-driven tests, one row per boundary.",g:["edge-cases","quality"],l:"b"},
+{c:"testing",t:"Contract tests for the seam",u:"Two services or modules that must agree.",x:"[Producer] and [consumer] keep drifting. Write contract tests: producer verifies it emits what the contract says; consumer verifies it handles exactly that. The contract lives in [shared location] as the single source of truth.",g:["integration","api"],l:"p"},
+{c:"testing",t:"E2E for the money path",u:"The flows that pay the bills get end-to-end coverage.",x:"Write an end-to-end test for [critical flow, e.g. signup→purchase]: real browser [Playwright], realistic data, assertions on what the user sees — not internals. Make it reliable enough to gate deploys.",g:["e2e","frontend"],l:"p"},
+{c:"testing",t:"Mutation spot-check",u:"Auditing whether tests actually bite.",x:"Manually mutation-test [module]: introduce five plausible bugs one at a time (off-by-one, inverted condition, dropped await, wrong default, swallowed error) and check whether the suite catches each. Report the survivors and add tests that kill them.",g:["quality","coverage"],l:"p"},
+
+// ── Category 6: Refactoring & Code Health ──
+{c:"refactor",t:"Behavior-preserving refactor",u:"The standard refactoring contract.",x:"Refactor [file/module] for readability and structure. Behavior must not change: run the tests before and after, and show me both runs. If tests don't cover something you're changing, add characterization tests first.",g:["safety","discipline"],l:"b"},
+{c:"refactor",t:"The simplify pass",u:"After any working implementation — especially generated ones.",x:"Re-read the diff you just produced and simplify it: remove abstractions used once, inline needless indirection, delete speculative flexibility, prefer the boring construct. The goal is less code that does the same thing.",g:["simplicity","critique"],l:"b"},
+{c:"refactor",t:"Rename across the world",u:"Names drifted from meaning.",x:"Rename [old] to [new] everywhere: code, tests, docs, comments, config keys, and migration-safe handling for anything serialized. List every file touched, grouped, and flag anywhere the rename changes a public contract.",g:["rename","mechanical"],l:"b"},
+{c:"refactor",t:"Extract the tangled function",u:"The 300-line function everyone fears.",x:"Refactor [function] by extraction: identify its distinct responsibilities, extract each into a named function with explicit inputs/outputs, and leave the original as a short orchestrator. Tests green after every single extraction — commit between each.",g:["extract","safety"],l:"p"},
+{c:"refactor",t:"Dead code funeral",u:"Scheduled cleanup with evidence.",x:"Delete dead code in [scope]: prove each candidate is unreachable (no references, no dynamic dispatch, no reflection, flag permanently off), delete it, and run the full suite. One commit per cluster so anything is easy to revert.",g:["cleanup","mechanical"],l:"b"},
+{c:"refactor",t:"Dependency untangling",u:"Two modules that secretly hold hands.",x:"[Module A] and [module B] are circularly/too tightly coupled. Map every dependency between them, decide which direction the arrow should point, and refactor to a clean one-way dependency — introducing an interface only if genuinely needed.",g:["architecture","extract"],l:"p"},
+{c:"refactor",t:"Duplication triage",u:"Copy-paste has accumulated.",x:"Find duplicated logic in [scope]. For each cluster: decide whether to unify (same concept) or leave alone (coincidentally similar — unifying would couple unrelated things). Unify only the true duplicates; justify each call.",g:["simplicity","strategy"],l:"p"},
+{c:"refactor",t:"Type-tighten the loose ends",u:"Stringly-typed code, anys, and optional-everything.",x:"Tighten the types in [module]: replace stringly-typed values with enums/unions, eliminate any/dynamic where the real type is knowable, and make illegal states unrepresentable. Each tightening must surface or prevent at least one potential bug — note them.",g:["types","quality"],l:"p"},
+{c:"refactor",t:"Boy-scout commit",u:"Small cleanups without derailing the main task.",x:"While working on [task], you noticed mess nearby. Apply the boy-scout rule in a SEPARATE commit: small, safe cleanups only (naming, dead imports, obvious simplifications) — nothing that changes behavior or needs discussion.",g:["cleanup","discipline"],l:"b"},
+{c:"refactor",t:"Strangler-fig step",u:"Replacing a legacy module incrementally.",x:"Next strangler-fig step for replacing [legacy module]: route [one slice] through the new implementation, verify outputs match the old one on real traffic/fixtures (run both, diff results), then cut the slice over. Old path stays until the diff is clean.",g:["legacy","migration"],l:"p"},
+{c:"refactor",t:"Comment honesty audit",u:"Comments that lie are worse than no comments.",x:"Audit comments in [scope]: delete ones that restate the code, fix ones the code has drifted away from, and add comments only where the WHY is non-obvious. Code should explain itself; comments explain intent and trade-offs.",g:["docs","cleanup"],l:"b"},
+{c:"refactor",t:"Hot-path optimization, evidence-gated",u:"Performance work without cargo-culting.",x:"Optimize [operation], but every change must be justified by the profiler: measure first, change one thing, measure again, keep only wins above [threshold]. Show the before/after numbers per change. Readability losses need 2x wins.",g:["performance","discipline"],l:"p"},
+{c:"refactor",t:"Config consolidation",u:"Settings scattered across files, envs, and constants.",x:"Consolidate configuration for [app/module]: inventory every config source, define one layered scheme (defaults → file → env), migrate all reads through one typed config object, and fail fast at startup on invalid config.",g:["config","architecture"],l:"p"},
+{c:"refactor",t:"The 10% smaller challenge",u:"Periodic codebase fitness.",x:"Make [module] 10% smaller without losing behavior or readability: dead code, needless indirection, verbose constructs with cleaner equivalents, consolidation of near-duplicates. Show the line count before and after, and the full test run.",g:["simplicity","cleanup"],l:"p"},
+{c:"refactor",t:"Module API slimming",u:"Modules that export their guts.",x:"[Module] exports too much. Find what's actually used externally, shrink the public API to that, and make everything else private. Breaking-change candidates get a deprecation note instead of immediate removal.",g:["api","architecture"],l:"p"},
+{c:"refactor",t:"Lint-debt paydown",u:"That ignore-file full of suppressions.",x:"We have [N] lint suppressions. Categorize them, fix the categories that indicate real risk (unused vars hiding bugs, floating promises, implicit any), and re-enable the rules. Leave style-only suppressions for last.",g:["cleanup","mechanical"],l:"b"}
+]);
+
+window.PROMPTS = (window.PROMPTS || []).concat([
+// ── Category 7: Git, Commits & Pull Requests ──
+{c:"git",t:"The well-formed commit",u:"Every time work reaches a green checkpoint.",x:"Commit this work: conventional commit format, subject under 70 characters describing WHAT, body explaining WHY and any trade-offs. Stage only files related to this change — list anything you're leaving unstaged.",g:["commits","hygiene"],l:"b"},
+{c:"git",t:"Branch status briefing",u:"Re-entering work after any gap.",x:"Read the last 10 commits on this branch and any open PR comments. Summarize: what's done, what's in flight, what feedback is unaddressed, and what the next action should be.",g:["sync","workflow"],l:"b"},
+{c:"git",t:"PR with a story",u:"Opening any pull request.",x:"Open a PR for this branch. Description: the problem (with issue link #[N]), the approach and why we chose it over alternatives, trade-offs accepted, how to test it, and anything reviewers should look at extra carefully.",g:["pr","communication"],l:"b"},
+{c:"git",t:"Split the mega-diff",u:"When one change grew into five.",x:"This branch contains multiple logical changes. Untangle it into separate commits (or stacked branches) — one logical change each, each independently revertable and buildable. Show me the proposed split before executing.",g:["hygiene","commits"],l:"p"},
+{c:"git",t:"Review-response pass",u:"PR feedback arrived.",x:"Address the review comments on PR [N]: implement the ones that are right, and where you disagree, draft a polite, technically-reasoned reply instead of complying — show me all replies before posting anything.",g:["pr","communication"],l:"b"},
+{c:"git",t:"Conflict resolution with intent",u:"Rebases and merges that aren't mechanical.",x:"Rebase this branch onto [target] and resolve conflicts. For each conflict: explain what both sides were trying to do and why your resolution preserves both intents. Flag any conflict where the two changes are genuinely incompatible.",g:["merge","hygiene"],l:"p"},
+{c:"git",t:"History archaeology",u:"Understanding why code is the way it is.",x:"Use git log/blame on [file/function] to reconstruct its history: when it was introduced, the major changes since, and what each was reacting to (read the commit messages and linked issues). Summarize as a timeline.",g:["history","explore"],l:"p"},
+{c:"git",t:"Revert decision support",u:"Something shipped and broke; revert or fix-forward?",x:"Commit [sha] broke [thing] in production. Compare reverting vs fixing forward: what else lands in the revert, how risky is the forward fix, what's fastest to safe? Recommend one with reasoning, then execute on my confirmation.",g:["incident","merge"],l:"p"},
+{c:"git",t:"Worktree session setup",u:"Starting parallel workstreams.",x:"Set up git worktrees for parallel work: [task A] and [task B]. Create ../[repo]-[slug] directories on fresh branches from [base], and confirm both build and pass tests before I open sessions in them.",g:["worktree","workflow"],l:"p"},
+{c:"git",t:"Pre-push checklist",u:"A standing gate before anything leaves your machine.",x:"Before pushing: run the full test suite, the linter, and a self-review of the diff. Report results as a checklist. If anything fails or any diff chunk surprises you, stop and show me instead of pushing.",g:["hygiene","discipline"],l:"b"},
+{c:"git",t:"Changelog from history",u:"Release time.",x:"Generate release notes for [range/tag..tag]: group merged changes into Features / Fixes / Internal, write each entry user-facing and jargon-free, ignore dependency-bot noise, and link PR numbers. Draft only — don't tag anything.",g:["release","communication"],l:"b"},
+{c:"git",t:"Bisect-friendly history rewrite",u:"Before merging a messy WIP branch.",x:"Interactively rebase this branch into a clean sequence: each commit builds and passes tests on its own, WIP/fixup commits squashed into their logical parents, messages rewritten to the conventional format. Verify buildability per commit.",g:["hygiene","commits"],l:"p"},
+{c:"git",t:"The stale-branch sweep",u:"Repo hygiene day.",x:"List all branches: which are merged (safe to delete), which are stale but unmerged (summarize what each contains and whether it looks worth salvaging), and which are active. Propose the cleanup; delete only after my approval.",g:["cleanup","hygiene"],l:"b"},
+{c:"git",t:"Patch extraction",u:"Pulling one good change out of an abandoned branch.",x:"Branch [name] is abandoned but contains a good fix for [thing]. Extract just that change onto a fresh branch from [base]: cherry-pick if clean, otherwise re-apply manually. Verify tests, then open a small PR.",g:["merge","workflow"],l:"p"},
+{c:"git",t:"Blame-driven reviewer pick",u:"Choosing who should review what.",x:"For this diff, use git blame and history to identify who has the most context on each touched area. Suggest reviewers per file group, with one line on why each person is relevant.",g:["pr","communication"],l:"p"},
+{c:"git",t:"Monorepo scoped status",u:"Big repo, small concern.",x:"Within [package/dir] only: what changed in the last [period], by whom, and what's currently in flight (open PRs touching it)? Ignore the rest of the monorepo.",g:["sync","history"],l:"b"},
+
+// ── Category 8: Code Review & Security Audits ──
+{c:"review",t:"Staff-engineer review",u:"The standard full review prompt.",x:"Review the current diff like a staff engineer: correctness first, then security, then maintainability. Severity-tag every finding (BLOCKER/MAJOR/MINOR) with file:line, why it matters, and the concrete fix. No rubber stamps — if it's clean, prove you looked by naming what you checked.",g:["review","quality"],l:"b"},
+{c:"review",t:"Fresh-context review",u:"Reviewing work from this same session.",x:"/clear\n\nReview the diff on this branch with no memory of how it was written: read the linked issue for intent, then judge the diff cold. Sunk-cost bias is the enemy — flag anything you'd push back on in a stranger's PR.",g:["review","discipline"],l:"p"},
+{c:"review",t:"Injection audit",u:"Anything that builds queries, commands, or markup from input.",x:"Audit [scope] for injection: SQL, shell, path traversal, template/HTML, header injection. For each sink, trace whether attacker-controlled input can reach it. Report file:line, severity, proof-of-concept input, and the fix.",g:["security","audit"],l:"p"},
+{c:"review",t:"AuthZ matrix check",u:"Endpoints and the permissions they actually enforce.",x:"Build the authorization matrix for [API/module]: every endpoint/action × who can call it × what check enforces that. Then flag: missing checks, checks done client-side only, object-level authorization gaps (can user A touch user B's data by changing an ID?).",g:["security","audit"],l:"p"},
+{c:"review",t:"Secrets sweep",u:"Pre-release or post-incident hygiene.",x:"Sweep the repo and git history for secrets: API keys, tokens, passwords, private keys, connection strings — including in tests, fixtures, and old commits. Report findings with locations. Do not print full secret values; show prefixes only.",g:["security","audit"],l:"b"},
+{c:"review",t:"The 'what would break this' review",u:"A different lens that catches different bugs.",x:"For this diff, don't review style — attack it: what input, state, timing, or scale would break this code? Try to construct three concrete failure scenarios. For each, say whether the code survives and what guards it.",g:["review","edge-cases"],l:"p"},
+{c:"review",t:"Dependency risk review",u:"Before merging any PR that adds a package.",x:"This PR adds [package]. Assess: maintenance health, install-time scripts, transitive dependencies, known CVEs, what permissions/network access it effectively gets, and whether stdlib or an existing dependency could do the job. Recommend accept/replace/reject.",g:["security","dependencies"],l:"p"},
+{c:"review",t:"Error-path review",u:"The 80% of code that only runs on bad days.",x:"Review only the error paths in this diff: what happens on timeout, partial failure, malformed response, double-invocation? Verify errors propagate with context, resources get released, and nothing is silently swallowed. List each path with a verdict.",g:["review","reliability"],l:"p"},
+{c:"review",t:"Performance review pass",u:"Diffs touching hot paths or data access.",x:"Review this diff for performance: N+1 queries, missing indexes implied by new query shapes, unbounded result sets, sync work on hot paths, accidental O(n²). For each finding: estimated impact at [scale] and the fix.",g:["review","performance"],l:"p"},
+{c:"review",t:"API-contract review",u:"Changes to anything external callers depend on.",x:"Does this diff change any public contract — API shapes, response codes, event schemas, serialization formats, config keys? List every contract change, classify breaking vs additive, and verify breaking ones have versioning or a migration story.",g:["review","api"],l:"p"},
+{c:"review",t:"Readability review",u:"Code that works but won't survive its next reader.",x:"Review this diff purely for the next reader: misleading names, functions doing more than their name says, comment drift, surprising control flow, magic values. Suggest the five changes that most improve comprehension.",g:["review","quality"],l:"b"},
+{c:"review",t:"Prompt-injection surface audit",u:"Apps and agents that feed external content to an LLM.",x:"Audit [feature/agent] for prompt injection: list every place external content (web pages, user docs, tool results, comments) enters the model's context, what actions the model can take, and where untrusted content could steer those actions. Propose guards: privilege separation, confirmation gates, content tagging.",g:["security","ai"],l:"p"},
+{c:"review",t:"Concurrency review",u:"Diffs introducing async, threads, or shared state.",x:"Review this diff for concurrency hazards: shared mutable state, check-then-act races, missing awaits, deadlock-prone lock ordering, and unbounded parallelism. For each: the interleaving that breaks it and the fix.",g:["review","concurrency"],l:"p"},
+{c:"review",t:"Data-privacy pass",u:"Features touching personal or sensitive data.",x:"Review [feature] for data handling: what personal/sensitive fields are collected, where they're stored, who can read them, whether they leak into logs/analytics/error reports, and retention. Flag anything that would surprise the user who owns the data.",g:["security","privacy"],l:"p"},
+{c:"review",t:"The two-minute sanity review",u:"Small diffs that still deserve eyes.",x:"Quick review of this small diff: does it do what the message says, does anything else use what it touches, is there a test, and would it surprise anyone reading it in six months? Four one-line answers.",g:["review","workflow"],l:"b"},
+{c:"review",t:"Review the reviewer",u:"Calibrating an automated review setup.",x:"Here are the last three reviews you produced and what actually broke afterward: [paste/links]. What did the reviews miss, what pattern explains the misses, and how should the review checklist change to catch that class next time?",g:["review","meta"],l:"p"},
+
+// ── Category 9: Documentation & Knowledge ──
+{c:"docs",t:"Verified setup guide",u:"The README's setup section, but true.",x:"Write the setup guide by actually following it: start from a clean state, run every command you document, and fix the guide wherever reality disagrees. The final doc must contain only steps you executed successfully.",g:["verify","onboarding"],l:"b"},
+{c:"docs",t:"Doc drift detector",u:"Weekly hygiene, or before any release.",x:"Diff our docs against the code that changed in [period/range]: which documented behaviors, commands, or APIs no longer match reality? List each drift with the doc location and the correct current behavior, then fix them.",g:["verify","maintenance"],l:"b"},
+{c:"docs",t:"API reference from the routes",u:"Generating reference docs that match the code.",x:"Generate API reference docs from the actual route definitions in [scope]: method, path, params with types, auth requirements, response shapes, error codes. Pull descriptions from code comments where they exist; flag endpoints with none.",g:["api","generate"],l:"b"},
+{c:"docs",t:"Architecture overview with diagram",u:"The missing 'how it all fits' page.",x:"Write docs/architecture.md: the system in five paragraphs, a Mermaid diagram of major components and data flow, the three most important design decisions and why, and where each kind of code lives. Audience: an engineer in week one.",g:["architecture","diagram"],l:"b"},
+{c:"docs",t:"Runbook from the incident",u:"After any operational fire.",x:"Turn what we just did to resolve [incident] into a runbook: symptoms, how to confirm the diagnosis, step-by-step remediation with exact commands, verification, and escalation criteria. Test the commands where safely possible.",g:["operations","artifact"],l:"p"},
+{c:"docs",t:"Module README pass",u:"Documenting the seams of the codebase.",x:"For each top-level module in [scope], write/update a short README: what it owns, its public interface, what it depends on, and the one thing most likely to confuse a newcomer. Keep each under 40 lines.",g:["onboarding","maintenance"],l:"b"},
+{c:"docs",t:"Decision log backfill",u:"Capturing tribal knowledge before it walks out the door.",x:"From git history, PR discussions, and code comments, reconstruct the five biggest architectural decisions in this repo and write a one-page decision log: what was decided, when, the apparent reasoning, and the current consequences. Mark inferences as inferences.",g:["architecture","history"],l:"p"},
+{c:"docs",t:"The debt register",u:"Making invisible debt visible and rankable.",x:"Sweep [scope] for TODO/FIXME/HACK comments and known workarounds. Compile docs/debt.md: each item with location, what the proper fix is, estimated effort, and risk of leaving it. Rank by risk-to-effort ratio.",g:["maintenance","artifact"],l:"b"},
+{c:"docs",t:"Glossary extraction",u:"Domain language nobody ever wrote down.",x:"Extract the domain glossary from this codebase: every domain term in type names, table names, and core functions. Define each from how the code actually uses it, and flag terms used inconsistently in different modules.",g:["onboarding","generate"],l:"b"},
+{c:"docs",t:"Example-driven how-to",u:"Docs for the task people actually do.",x:"Write a how-to for [common task, e.g. adding a new endpoint]: a complete worked example built by actually doing it once in a scratch branch, with every file touched shown in order. End with a checklist version.",g:["verify","onboarding"],l:"b"},
+{c:"docs",t:"Diagram refresh",u:"Diagrams age faster than prose.",x:"Check every diagram in [docs location] against the current code: regenerate the ones that drifted (Mermaid preferred so future updates are diffable), and delete the ones describing systems that no longer exist.",g:["diagram","maintenance"],l:"p"},
+{c:"docs",t:"Release notes, user-voiced",u:"Turning a changelog into communication.",x:"Rewrite these raw release notes for users: lead with what they can now do, plain language, group by user benefit not by PR, and move internal changes to a collapsed section. Keep it honest — no marketing inflation. [paste raw notes]",g:["communication","generate"],l:"b"},
+{c:"docs",t:"FAQ from real questions",u:"Support questions keep repeating.",x:"Here are the questions people actually asked this month: [paste/list]. Write an FAQ that answers each accurately by checking the code/docs, ordered by frequency. Where the question reveals a UX problem, note it separately.",g:["communication","artifact"],l:"b"},
+{c:"docs",t:"Comment the why",u:"Dense code that needs intent, not narration.",x:"Add comments to [file], but only WHY comments: intent, trade-offs, invariants, and links to decisions/issues. Zero comments that restate what the code does. If a section needs a WHAT comment to be understood, refactor it instead.",g:["quality","maintenance"],l:"b"},
+{c:"docs",t:"Deprecation notice kit",u:"Sunsetting something people still use.",x:"We're deprecating [thing]. Produce the kit: doc banner with timeline, migration guide with before/after examples for every common usage pattern (find them with grep), and the announcement message. Verify the migration examples compile/run.",g:["api","communication"],l:"p"}
+]);
+
+window.PROMPTS = (window.PROMPTS || []).concat([
+// ── Category 10: Automation, CI & Headless Mode ──
+{c:"automation",t:"Headless one-shot",u:"Scripting Claude from the shell.",x:"claude -p \"Summarize the failures in this test output and suggest the single most likely fix: $(npm test 2>&1 | tail -50)\"",g:["headless","cli"],l:"b"},
+{c:"automation",t:"Pipe-friendly analyzer",u:"Claude as a Unix filter in your toolchain.",x:"cat error.log | claude -p \"Group these errors by root cause, count each group, and output as a markdown table sorted by frequency.\"",g:["headless","cli"],l:"b"},
+{c:"automation",t:"CI failure auto-triage",u:"The pipeline failed at 3am; arrive to a diagnosis.",x:"Set up a CI step that runs on failure: claude -p with the build log, asking for: the failing step, most likely cause (flake vs real), the relevant diff hunk if a commit caused it, and a suggested fix — posted as a comment on the PR.",g:["ci","triage"],l:"p"},
+{c:"automation",t:"GitHub Actions review bot",u:"A first-pass reviewer on every PR.",x:"Create a GitHub Actions workflow that runs Claude Code on each PR: review the diff against our CLAUDE.md conventions, comment findings with severity tags, and approve-with-comments only if no BLOCKERs. Restrict tools to read-only plus the gh comment command.",g:["ci","review"],l:"p"},
+{c:"automation",t:"Nightly dependency triage Routine",u:"Stay current without thinking about it.",x:"Create a routine that runs weekly: check for dependency updates, read changelogs for breaking changes, apply safe minor/patch updates on a branch, run the full suite, and open a PR with a summary of what changed and what was deliberately skipped.",g:["routine","dependencies"],l:"p"},
+{c:"automation",t:"Issue-to-draft-PR pipeline",u:"Well-specified tickets become reviewable starting points.",x:"For issue #[N]: read it, implement the change on a branch named after the issue, run tests, and open a DRAFT PR linking the issue — explicitly marked as agent-generated for human review. If the issue is ambiguous, comment your questions on it instead of guessing.",g:["workflow","headless"],l:"p"},
+{c:"automation",t:"Scheduled docs gardener",u:"Self-maintaining documentation.",x:"Create a weekly routine: diff the docs against this week's merged changes, fix factual drift, regenerate stale diagrams, and open a docs-only PR with a one-line summary per fix. Never touch anything outside docs/.",g:["routine","docs"],l:"p"},
+{c:"automation",t:"Flaky-test bounty hunter",u:"Background work nobody volunteers for.",x:"Create a routine: re-run the test suite 10 times nightly, identify tests that failed inconsistently, and for each open an issue with the failure rate, captured output, and a hypothesis about the nondeterminism source.",g:["routine","testing"],l:"p"},
+{c:"automation",t:"Safe unattended run config",u:"Before letting anything run without you.",x:"Configure this headless task to run safely unattended: allowed tools restricted to [list], deny rules for push/deploy/secrets, a hard timeout, output to a log file, and a final self-check that the definition of done is met — exiting nonzero if not.",g:["headless","security"],l:"p"},
+{c:"automation",t:"Commit-message janitor",u:"Pre-commit quality without nagging humans.",x:"claude -p \"Rewrite this commit message to conventional format, subject under 70 chars, body explaining why. Output only the message: $(git log -1 --format=%B)\"",g:["headless","hygiene"],l:"b"},
+{c:"automation",t:"Log anomaly summarizer",u:"Daily ops digest.",x:"Create a daily routine: pull the last 24h of [log source], compare error patterns against the previous 7-day baseline, and post a three-bullet digest — new error types, significant rate changes, all-clear if neither — to [channel/file].",g:["routine","operations"],l:"p"},
+{c:"automation",t:"Batch mechanical migration",u:"Hundreds of files needing the same transformation.",x:"Apply [mechanical change, e.g. new import style] across the repo in batches of 20 files: transform, run the relevant tests, commit the batch, continue. Use the cheapest model that's reliable. On any test failure, stop and report rather than pushing through.",g:["headless","mechanical"],l:"p"},
+{c:"automation",t:"PR description autofill",u:"Consistent PRs with zero willpower.",x:"Set up a hook or CI step: when a PR opens with an empty description, generate one from the diff and commits — problem, approach, test plan — and post it as the description with an [auto-generated] marker for the author to edit.",g:["ci","communication"],l:"b"},
+{c:"automation",t:"Overnight task dispatch",u:"End the day by queuing tomorrow's grunt work.",x:"Dispatch this to run overnight: [mechanical task]. Definition of done: [criteria]. It must self-verify against that definition, commit checkpoints as it goes, and leave a morning report at docs/plans/overnight-[date].md: done/blocked/needs-decision.",g:["routine","workflow"],l:"p"},
+{c:"automation",t:"Model economics audit",u:"Your agent bill crept up.",x:"Review how we use models across automations: which jobs run on which model, token volume per job, and which could downgrade to a cheaper model without quality loss (mechanical transforms, summaries, triage). Propose the new assignment with expected savings.",g:["cost","strategy"],l:"p"},
+{c:"automation",t:"Release pipeline dry-run",u:"Verifying automation before trusting it.",x:"Dry-run the release process end-to-end in a sandbox: version bump, changelog, build, tag — executing everything except the irreversible steps, which you print instead of running. Report what would have happened and anything that errored.",g:["ci","release"],l:"p"},
+
+// ── Category 11: Subagents, Skills & Configuration ──
+{c:"config",t:"Code-reviewer subagent",u:"The first subagent every setup should have.",x:"Create a subagent at .claude/agents/code-reviewer.md: read-only tools plus git diff, opus model. System prompt: staff-level reviewer, correctness → security → maintainability, severity-tagged findings with file:line, never rubber-stamps. Then run it on the current diff as a test.",g:["subagent","review"],l:"b"},
+{c:"config",t:"Research subagent",u:"Keep exploration out of your main context.",x:"Create a research subagent: read-only tools, instructed to explore broadly but report narrowly — always a one-page brief with: how it works today, key files, invariants, and the three riskiest assumptions. Use it to research [area] now.",g:["subagent","explore"],l:"b"},
+{c:"config",t:"Session-to-skill converter",u:"You just did something well; package it.",x:"Turn what we did this session into a skill named [name]: SKILL.md with the workflow steps we converged on, a description written to trigger on the phrases I'd actually say, and any scripts as files in scripts/. Show me the description before saving.",g:["skill","meta"],l:"b"},
+{c:"config",t:"CLAUDE.md session retro",u:"The compounding habit — end of every significant session.",x:"What did you learn this session that isn't in CLAUDE.md — corrections I made, conventions you discovered, commands that worked? Propose specific additions, shortest-possible wording, and flag anything in the current file that session evidence contradicts.",g:["claude-md","meta"],l:"b"},
+{c:"config",t:"CLAUDE.md slim-down",u:"The file grew past usefulness.",x:"Audit CLAUDE.md: it's [N] lines. Cut it under 200 by removing anything the linter already enforces, anything generic to the language rather than this repo, and anything stale. Every surviving line must be imperative and repo-specific. Show me the cuts grouped by reason.",g:["claude-md","maintenance"],l:"p"},
+{c:"config",t:"Format-on-edit hook",u:"The first hook every setup should have.",x:"Add a PostToolUse hook on Edit|Write that runs [formatter] on the touched files. Test it by making an edit and confirming the formatting applied. Then add it to the repo settings so the team shares it.",g:["hook","hygiene"],l:"b"},
+{c:"config",t:"Guardrail hook kit",u:"Deterministic safety before loosening permissions.",x:"Add PreToolUse hooks that block: rm -rf outside the workspace, git push --force, any command reading .env files, and edits under [protected dirs]. Each block must print WHY and the sanctioned alternative. Test each guard by attempting the blocked action.",g:["hook","security"],l:"p"},
+{c:"config",t:"Definition-of-done Stop hook",u:"Ending 'done but not actually done'.",x:"Add a Stop hook that runs [test command] when you finish a turn: if tests fail, you get the output back and must keep working. Make the failure message include the first failing assertion so the next iteration is targeted.",g:["hook","discipline"],l:"p"},
+{c:"config",t:"Custom command starter pack",u:"Five commands that pay rent immediately.",x:"Create .claude/commands/: /review (staff-level diff review), /simplify (reduce the last diff), /test-first $ARGUMENTS (failing tests for the named behavior), /retro (CLAUDE.md learnings proposal), /standup (summarize my commits since yesterday). Conventional frontmatter, minimal allowed-tools each.",g:["commands","setup"],l:"b"},
+{c:"config",t:"MCP least-privilege audit",u:"Quarterly connection hygiene.",x:"List every connected MCP server with: tools it exposes, when I last actually used it, and what credentials it holds. Recommend disconnections for the unused, credential downgrades for the over-privileged (e.g. write → read-only), and confirm what stays.",g:["mcp","security"],l:"p"},
+{c:"config",t:"Permission ladder tune-up",u:"You're clicking 'approve' too often — or wincing too often.",x:"Review my permission prompts from recent sessions: which approvals do I always grant (candidates for standing allow rules), and which actions should stay gated or move to deny? Propose the new /permissions config with one-line justifications.",g:["permissions","workflow"],l:"p"},
+{c:"config",t:"Subagent specialization check",u:"Your agents drifted into generic assistants.",x:"Review the subagents in .claude/agents/: for each, is its system prompt actually specialized (would a generic agent behave differently?), are its tools minimal for its job, and is its model assignment economical? Tighten each one.",g:["subagent","maintenance"],l:"p"},
+{c:"config",t:"Skill trigger debugging",u:"A skill exists but never fires.",x:"The [name] skill isn't triggering. Compare its description against the last five messages where I expected it: what phrasing gap explains the miss? Rewrite the description with 'use when…' clauses matching my actual words, and test by replaying one of those messages.",g:["skill","meta"],l:"p"},
+{c:"config",t:"Team config bootstrap",u:"Making your setup the team's setup.",x:"Package our working config for the team: CLAUDE.md, hooks, commands, agents, and .mcp.json into the repo with a docs/agent-setup.md explaining what each piece does and the one command to verify it all works on a fresh clone.",g:["setup","team"],l:"p"},
+{c:"config",t:"Memory hygiene check",u:"Auto memory accumulates cruft like everything else.",x:"Show me what's in auto memory for this project. Flag entries that are stale, wrong, or redundant with CLAUDE.md, and clean them up. Anything valuable that's memory-only should be promoted into CLAUDE.md where the team can see it.",g:["claude-md","maintenance"],l:"p"},
+{c:"config",t:"The config-as-context audit",u:"When sessions feel sluggish or distracted.",x:"Inventory everything loaded into my context at session start: CLAUDE.md lines, skill descriptions, MCP tool descriptions, memory. Estimate the token cost of each block and identify the 20% delivering the least value per token. Propose cuts.",g:["context","cost"],l:"p"},
+
+// ── Category 12: Daily Workflow & Session Management ──
+{c:"workflow",t:"Morning sync",u:"First message of the day, per project.",x:"Read the last few commits, open PR comments, and docs/plans/ for in-flight work. Summarize: where we stand, what's pending review, what's blocked, and your recommended first task for today.",g:["routine","sync"],l:"b"},
+{c:"workflow",t:"Session brief template",u:"Starting any focused work session.",x:"Today's session: [goal]. Context: [links/files]. Constraints: [what not to touch]. Definition of done: [criteria]. Confirm your understanding in two sentences, flag anything ambiguous, then propose the first step — don't execute yet.",g:["brief","discipline"],l:"b"},
+{c:"workflow",t:"Compact with intent",u:"At a milestone in a long session.",x:"/compact Keep: the current task definition, decisions made with reasons, files we're working in, and the remaining steps. Drop: exploration dead-ends and resolved debugging.",g:["context","hygiene"],l:"b"},
+{c:"workflow",t:"End-of-day close",u:"The five minutes that make tomorrow cheap.",x:"Close out: (1) update docs/plans/[task].md with progress and exact next steps, (2) commit anything green with proper messages, (3) propose CLAUDE.md additions from today's corrections, (4) one line on what fought us today.",g:["routine","artifact"],l:"b"},
+{c:"workflow",t:"Session handoff brief",u:"Continuing in a fresh session or handing to a teammate.",x:"Write a handoff brief for a fresh session with zero context: the goal, current state, decisions made and why, files in play, the next three steps, and known traps. Save to docs/plans/[task]-handoff.md. It must stand entirely on its own.",g:["artifact","context"],l:"b"},
+{c:"workflow",t:"Standup summary",u:"30 seconds before the meeting.",x:"From my commits and PR activity since yesterday morning, draft my standup: what I did (plain language, grouped), what's next, and blockers. Three bullets max per section.",g:["sync","communication"],l:"b"},
+{c:"workflow",t:"The redirect",u:"The moment a session goes off course.",x:"Stop. You're heading the wrong direction: [what's wrong]. Forget that approach. The actual requirement is [restate]. Before doing anything, tell me your new plan in three bullets.",g:["discipline","brief"],l:"b"},
+{c:"workflow",t:"Should-I-clear check",u:"Deciding whether the session is salvageable.",x:"Honest self-assessment: summarize what you currently believe about the task in five bullets. (If any of these are wrong or fuzzy, I'm clearing the session and re-briefing rather than patching your context.)",g:["context","discipline"],l:"p"},
+{c:"workflow",t:"Parallel board check-in",u:"Rotating attention across worktrees/sessions.",x:"Status check: state of the current task in three bullets — done since last check-in, currently doing, and any decision you need from me. If you're blocked or uncertain, say so now rather than continuing on an assumption.",g:["sync","subagent"],l:"p"},
+{c:"workflow",t:"Weekly system gardening",u:"The half-hour that keeps the machine sharp.",x:"Weekly maintenance review: stale MCP servers, permission rules I always override, auto-memory cruft, skills that never trigger, and hooks that fired uselessly. Propose one tune-up in each area — small, concrete, this week.",g:["routine","maintenance"],l:"p"},
+{c:"workflow",t:"Learning extraction",u:"Turning a hard week into permanent skill.",x:"Review our sessions on [task/project]: what took longest, where did we loop, and which of my prompts worked vs flopped? Distill three changes to how I should brief you, and any CLAUDE.md/skill/hook changes that would prevent the loops.",g:["meta","learning"],l:"p"},
+{c:"workflow",t:"Context budget plan",u:"Starting a task you know is too big for one window.",x:"This task won't fit one session. Propose the session plan: how to split it at clean boundaries, what artifact each session produces, and what each subsequent session needs to load. We'll externalize everything between sessions.",g:["context","plan-mode"],l:"p"},
+{c:"workflow",t:"The deliberate-practice drill",u:"Leveling yourself up, not just the output.",x:"Before you implement [task], I'll say how I'd do it: [your approach]. Implement it your way, then compare: where our approaches differ, whose is better and why. Teach me the difference — don't just be polite.",g:["learning","meta"],l:"b"},
+{c:"workflow",t:"Interview the codebase, daily",u:"Five minutes that compound your own understanding.",x:"Quiz me: ask three questions about [area of our codebase] that a senior engineer here should be able to answer. I'll answer; correct me with references to the actual code.",g:["learning","explore"],l:"b"},
+{c:"workflow",t:"Meeting-to-tickets converter",u:"After any planning discussion.",x:"From these notes: [paste], extract the engineering work: one ticket per item with title, description, acceptance criteria, and rough size. Flag items that are decisions-pending rather than work. Output ready to paste into [tracker].",g:["communication","artifact"],l:"b"},
+{c:"workflow",t:"Focus guard",u:"Prepend when you tend to get dragged into rabbit holes.",x:"While working on [task]: if you discover unrelated problems, do NOT fix them — append each to docs/debt.md with location and one line, and continue. The only goal this session is [definition of done].",g:["discipline","brief"],l:"b"}
+]);
+
+window.PROMPTS = (window.PROMPTS || []).concat([
+{c:"onboarding",t:"Explain it three ways",u:"When a concept in the code won't click.",x:"Explain [concept/module] three ways: (1) to a new engineer, (2) with a concrete walkthrough of one real request through it, (3) as a one-tweet summary. Stop after each so I can tell you which lens is working.",g:["learning","explore"],l:"b"},
+{c:"planning",t:"Cost-of-delay tiebreak",u:"Two tasks, one afternoon.",x:"Help me prioritize between [task A] and [task B]: cost of delaying each by a week, risk of each growing harder over time, and what each unblocks. Recommend an order and say what would change your mind.",g:["scope","strategy"],l:"b"},
+{c:"implementation",t:"Spike-to-production rewrite",u:"The prototype is about to get promoted; don't let it sneak in.",x:"This spike works: [location]. Rewrite it for production from scratch — the spike is reference material, not a starting point. Production version needs: error handling, tests, types, and conformance to our conventions. Then delete the spike.",g:["quality","discipline"],l:"p"},
+{c:"debugging",t:"Explain the fix back to me",u:"Before accepting a fix you don't fully follow.",x:"Before I accept this fix: explain the root cause in one paragraph, why this change addresses the cause rather than the symptom, and what would have to be true for the bug to come back anyway.",g:["rca","learning"],l:"b"},
+{c:"testing",t:"Test naming pass",u:"Test names should read as a spec.",x:"Rename the tests in [file] so the suite reads as a specification: each name states the scenario and expected behavior ('rejects expired tokens with 401'), no 'test1' or 'works correctly'. The list of names alone should document the module.",g:["quality","docs"],l:"b"},
+{c:"refactor",t:"Pure-function extraction",u:"Logic tangled up with IO is hard to test and reason about.",x:"Refactor [module] to separate calculation from IO: extract the decision logic into pure functions (inputs in, result out, no side effects), leaving thin IO wrappers around them. Add direct unit tests for the extracted functions.",g:["extract","testing"],l:"p"},
+{c:"git",t:"Who-to-ask finder",u:"You need the human with context, fast.",x:"For [file/feature], use git history to find who has the most meaningful recent context (not just line counts — substantive commits). For each person: what they changed and when they last touched it.",g:["history","communication"],l:"b"},
+{c:"review",t:"Compliance-sensitive diff sweep",u:"Codebases with regulatory exposure.",x:"Review this diff for compliance-sensitive changes: anything touching [PII/payments/health data/audit logs], changes to data retention or deletion paths, and new third-party data flows. If any are present, list them in plain language for a non-engineer reviewer.",g:["security","privacy"],l:"p"},
+{c:"docs",t:"README first-impression test",u:"Your repo's front door.",x:"Read our README as a skeptical first-time visitor: what's missing, what's stale, what's in the wrong order? Rewrite it: what this is (2 sentences), quickstart that actually works, links to deeper docs. Verify the quickstart by running it.",g:["onboarding","verify"],l:"b"},
+{c:"automation",t:"Pre-merge checklist gate",u:"Encode your team's definition of mergeable.",x:"Create a CI gate that checks each PR against our checklist: tests added/updated for behavior changes, no new lint suppressions, docs touched if public API changed, no TODOs without issue links. Post unmet items as a PR comment, not a hard block.",g:["ci","hygiene"],l:"p"},
+{c:"config",t:"New-machine bootstrap",u:"Setting up Claude Code on a fresh laptop.",x:"Walk me through restoring my Claude Code setup on this machine: global ~/.claude config, auth, personal commands and agents, and verifying each repo's project config loads. End with a smoke test that proves CLAUDE.md, hooks, and MCP servers all work.",g:["setup","workflow"],l:"b"},
+{c:"workflow",t:"The Friday ship-or-shelve review",u:"Don't let half-done branches rot over the weekend.",x:"It's end of week. For every branch and in-flight task of mine: ship it (small push to mergeable), shelve it (handoff brief written, branch parked), or shoot it (abandon with a one-line lesson). Propose the verdict for each; execute on my confirmation.",g:["routine","discipline"],l:"p"}
+]);
+
+
+</script>
+<script>
+const CATS=[
+ {id:"onboarding",ic:"\u{1F9ED}",n:"Codebase Onboarding",full:"Codebase Onboarding & Understanding",d:"Tours, feature tracing, risk maps, and the prompts that turn an unfamiliar repo into home turf."},
+ {id:"planning",ic:"\u{1F4D0}",n:"Planning & Architecture",full:"Planning & Architecture",d:"Plan-mode research, design trade-offs, scope cutting, and red-teaming plans before they cost you."},
+ {id:"implementation",ic:"\u{1F6E0}\uFE0F",n:"Implementation",full:"Implementation & Feature Building",d:"Step-wise delegation, TDD loops, UI from mocks, and the constraints that keep generated code boring (in the good way)."},
+ {id:"debugging",ic:"\u{1F41B}",n:"Debugging & RCA",full:"Debugging & Root-Cause Analysis",d:"Reproduction-first discipline, ranked hypotheses, bisect, and fixes that stay minimal."},
+ {id:"testing",ic:"\u2705",n:"Testing & Quality",full:"Testing & Quality",d:"Failing-tests-first, edge-case gauntlets, characterization tests, and suites that actually bite."},
+ {id:"refactor",ic:"\u267B\uFE0F",n:"Refactoring & Code Health",full:"Refactoring & Code Health",d:"Behavior-preserving refactors, simplification passes, dead-code funerals, and strangler figs."},
+ {id:"git",ic:"\u{1F33F}",n:"Git, Commits & PRs",full:"Git, Commits & Pull Requests",d:"Commit hygiene, PRs with a story, history archaeology, and worktree setups for parallel work."},
+ {id:"review",ic:"\u{1F6E1}\uFE0F",n:"Review & Security",full:"Code Review & Security Audits",d:"Staff-level reviews, injection and authz audits, secrets sweeps, and prompt-injection surface checks."},
+ {id:"docs",ic:"\u{1F4DA}",n:"Documentation",full:"Documentation & Knowledge",d:"Verified setup guides, drift detection, runbooks, and docs generated from truth instead of memory."},
+ {id:"automation",ic:"\u2699\uFE0F",n:"Automation & CI",full:"Automation, CI & Headless Mode",d:"claude -p one-shots, CI bots, Routines, overnight dispatches, and model economics."},
+ {id:"config",ic:"\u{1F9E9}",n:"Agents, Skills & Config",full:"Subagents, Skills & Configuration",d:"Subagent definitions, skill packaging, CLAUDE.md retros, hooks, and permission tuning."},
+ {id:"workflow",ic:"\u2600\uFE0F",n:"Daily Workflow",full:"Daily Workflow & Session Management",d:"Morning syncs, session briefs, context hygiene, handoffs, and the rituals that compound."}
+];
+const P=window.PROMPTS.map((p,i)=>({...p,n:i+1}));
+let view="all", level="all", q="", tagFilter="";
+let favs=new Set(JSON.parse(localStorage.getItem("ccp_favs")||"[]"));
+
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function buildNav(){
+  const counts={};P.forEach(p=>counts[p.c]=(counts[p.c]||0)+1);
+  let h=`<button data-v="all"><span class="ic">\u25A6</span><span class="n">All prompts</span><span class="ct">${P.length}</span></button>`;
+  h+=`<button data-v="favs"><span class="ic">\u2605</span><span class="n">Favorites</span><span class="ct" id="favCt">${favs.size}</span></button>`;
+  h+=`<div class="sec">Categories</div>`;
+  CATS.forEach(c=>{h+=`<button data-v="${c.id}"><span class="ic">${c.ic}</span><span class="n">${c.n}</span><span class="ct">${counts[c.id]||0}</span></button>`;});
+  $("nav").innerHTML=h;
+  $("nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{setView(b.dataset.v);toggleMenu(false);});
+}
+function setView(v){view=v;tagFilter="";render();window.scrollTo({top:0});}
+function setLevel(l){level=l;render();}
+function setTag(t){tagFilter=tagFilter===t?"":t;render();}
+
+function hl(text,terms){
+  let h=esc(text);
+  h=h.replace(/\[([^\]\n]{1,60}?)\]/g,'<span class="tok">[$1]</span>');
+  if(terms.length){
+    const re=new RegExp("("+terms.map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")","gi");
+    h=h.split(/(<[^>]+>)/).map(part=>part.startsWith("<")?part:part.replace(re,"<mark>$1</mark>")).join("");
+  }
+  return h;
+}
+
+function filtered(){
+  const terms=q.toLowerCase().split(/\s+/).filter(Boolean);
+  return P.filter(p=>{
+    if(view==="favs"&&!favs.has(p.n))return false;
+    if(view!=="all"&&view!=="favs"&&p.c!==view)return false;
+    if(level!=="all"&&p.l!==level)return false;
+    if(tagFilter&&!p.g.includes(tagFilter))return false;
+    if(terms.length){
+      const hay=(p.t+" "+p.u+" "+p.x+" "+p.g.join(" ")).toLowerCase();
+      if(!terms.every(t=>hay.includes(t)))return false;
+    }
+    return true;
+  });
+}
+
+function render(){
+  // header pills
+  $("lvAll").className="pill"+(level==="all"?" on":"");
+  $("lvB").className="pill"+(level==="b"?" on":"");
+  $("lvP").className="pill"+(level==="p"?" on":"");
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===view));
+  // hero
+  const cat=CATS.find(c=>c.id===view);
+  if(view==="all"){$("heroTitle").innerHTML='<span class="hic">\u25A6</span> All prompts';$("heroSub").textContent="207 battle-tested prompts for Claude Code, fully categorized across the development lifecycle. Search, filter, copy, ship.";}
+  else if(view==="favs"){$("heroTitle").innerHTML='<span class="hic">\u2605</span> Favorites';$("heroSub").textContent=favs.size?"Your hand-picked toolkit — saved in this browser.":"Star any prompt and it lives here. Build your personal toolkit.";}
+  else{$("heroTitle").innerHTML=`<span class="hic">${cat.ic}</span> ${cat.full}`;$("heroSub").textContent=cat.d;}
+  const rows=filtered();
+  $("heroMeta").textContent=tagFilter?`Filtered by tag “${tagFilter}” — click the tag again to clear`:"";
+  $("count").textContent=rows.length+" / "+P.length;
+  const terms=q.toLowerCase().split(/\s+/).filter(Boolean);
+  if(!rows.length){$("grid").innerHTML=`<div class="empty"><div class="e1">\u2315</div>No prompts match. Try fewer words, or clear filters.</div>`;return;}
+  $("grid").innerHTML=rows.map(p=>{
+    const cat=CATS.find(c=>c.id===p.c);
+    return `<div class="card">
+      <div class="hd"><span class="num">#${String(p.n).padStart(3,"0")}</span><h3>${hl(p.t,terms)}</h3>
+        <button class="fav${favs.has(p.n)?" on":""}" onclick="toggleFav(${p.n},this)" title="Favorite">${favs.has(p.n)?"\u2605":"\u2606"}</button></div>
+      <div class="use"><b>When:</b> ${hl(p.u,terms)}</div>
+      <div class="px">${hl(p.x,terms)}</div>
+      <div class="ft">
+        <span class="lv ${p.l}">${p.l==="b"?"Beginner":"Pro"}</span>
+        ${p.g.map(t=>`<button class="tag" onclick="setTag('${t}')">#${t}</button>`).join("")}
+        <button class="cp" onclick="copyP(${p.n},this)">Copy</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function copyP(n,btn){
+  const p=P.find(x=>x.n===n);
+  const done=()=>{btn.textContent="Copied \u2713";btn.classList.add("ok");setTimeout(()=>{btn.textContent="Copy";btn.classList.remove("ok");},1400);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(p.x).then(done).catch(()=>fallbackCopy(p.x,done));}
+  else fallbackCopy(p.x,done);
+}
+function fallbackCopy(text,done){
+  const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(e){}document.body.removeChild(ta);done();
+}
+function toggleFav(n,btn){
+  if(favs.has(n))favs.delete(n);else favs.add(n);
+  localStorage.setItem("ccp_favs",JSON.stringify([...favs]));
+  $("favCt").textContent=favs.size;
+  if(view==="favs")render();
+  else{btn.classList.toggle("on",favs.has(n));btn.textContent=favs.has(n)?"\u2605":"\u2606";}
+}
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+  document.documentElement.setAttribute("data-theme",cur);
+  localStorage.setItem("ccp_theme",cur);
+  $("themeBtn").textContent=cur==="light"?"\u263D":"\u263E";
+}
+function toggleMenu(force){
+  const open=force!==undefined?force:!$("side").classList.contains("open");
+  $("side").classList.toggle("open",open);$("scrim").classList.toggle("on",open);
+}
+
+// search
+let deb;
+$("q").addEventListener("input",e=>{clearTimeout(deb);deb=setTimeout(()=>{q=e.target.value;render();},120);});
+document.addEventListener("keydown",e=>{
+  if(e.key==="/"&&document.activeElement!==$("q")){e.preventDefault();$("q").focus();}
+  if(e.key==="Escape"){$("q").value="";q="";tagFilter="";render();$("q").blur();}
+});
+
+// init
+const savedTheme=localStorage.getItem("ccp_theme");
+if(savedTheme){document.documentElement.setAttribute("data-theme",savedTheme);$("themeBtn").textContent=savedTheme==="light"?"\u263D":"\u263E";}
+buildNav();render();
+</script>
+</body>
+</html>
