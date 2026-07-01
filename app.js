@@ -45,7 +45,7 @@ function render(){
  $("bBtn").className="pill"+(level==="b"?" on":"");
  $("pBtn").className="pill"+(level==="p"?" on":"");
  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.view===view));
- if(view==="all"){$("title").innerHTML="▦ All prompts";$("desc").textContent="264 copy-ready prompts for serious Claude Code work — expanded, searchable, and tuned for real engineering workflows.";}
+ if(view==="all"){$("title").innerHTML="▦ All prompts";$("desc").textContent="464 copy-ready prompts for serious Claude Code work — expanded, searchable, and tuned for real engineering workflows.";}
  else if(view==="favs"){$("title").innerHTML="★ Favorites";$("desc").textContent=favs.size?"Your saved prompt toolkit in this browser.":"Star prompts to save your reusable personal toolkit.";}
  else {$("title").innerHTML=`${cat.ic} ${cat.full}`;$("desc").textContent=cat.d;}
  $("statPrompts").textContent=PROMPTS.length;$("statFavs").textContent=favs.size;$("statShowing").textContent=rows.length;$("count").textContent=rows.length+" / "+PROMPTS.length;

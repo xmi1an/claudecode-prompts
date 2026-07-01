@@ -1,6 +1,6 @@
 # Claude Code Prompts
 
-An offline, single-page reference library of 264 copy-ready prompts for working with Claude Code — organized by engineering category (onboarding, planning, implementation, debugging, testing, refactoring, git, review, docs, automation, config, and workflow).
+An offline, single-page reference library of 464 copy-ready prompts for working with Claude Code — organized by engineering category (onboarding, planning, implementation, debugging, testing, refactoring, git, review, docs, automation, config, and workflow).
 
 ## Structure
 
