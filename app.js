@@ -45,11 +45,11 @@ function render(){
  $("bBtn").className="pill"+(level==="b"?" on":"");
  $("pBtn").className="pill"+(level==="p"?" on":"");
  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.view===view));
- if(view==="all"){$("title").innerHTML="▦ All prompts";$("desc").textContent="464 copy-ready prompts for serious Claude Code work — expanded, searchable, and tuned for real engineering workflows.";}
- else if(view==="favs"){$("title").innerHTML="★ Favorites";$("desc").textContent=favs.size?"Your saved prompt toolkit in this browser.":"Star prompts to save your reusable personal toolkit.";}
+ if(view==="all"){$("title").innerHTML="▦ All prompts";$("desc").textContent="464 copy-ready prompts for Claude Code.";}
+ else if(view==="favs"){$("title").innerHTML="★ Favorites";$("desc").textContent=favs.size?"Prompts you've starred.":"Star prompts to save them here.";}
  else {$("title").innerHTML=`${cat.ic} ${cat.full}`;$("desc").textContent=cat.d;}
  $("statPrompts").textContent=PROMPTS.length;$("statFavs").textContent=favs.size;$("statShowing").textContent=rows.length;$("count").textContent=rows.length+" / "+PROMPTS.length;
- if(!rows.length){$("grid").innerHTML='<div class="empty">⌕<br>No prompts match. Try fewer filters or clear search.</div>';return;}
+ if(!rows.length){$("grid").innerHTML='<div class="empty">⌕<br>No matches. Try clearing filters.</div>';return;}
  $("grid").innerHTML=rows.map(p=>`<article class="card" id="p${p.n}">
   <div class="hd"><span class="num">#${String(p.n).padStart(3,"0")}</span><h3>${hi(p.t)}</h3><button class="fav ${favs.has(p.n)?"on":""}" onclick="toggleFav(${p.n},this)" title="Favorite">${favs.has(p.n)?"★":"☆"}</button></div>
   <div class="use"><b>When:</b> ${hi(p.u)}</div>
@@ -64,20 +64,18 @@ function toggleFav(n,btn){favs.has(n)?favs.delete(n):favs.add(n);localStorage.se
 function copyText(text,btn){const done=()=>{if(btn){btn.textContent="Copied ✓";btn.classList.add("ok");setTimeout(()=>{btn.textContent=btn.classList.contains("alt")?"Builder":"Copy";btn.classList.remove("ok")},1200)}};navigator.clipboard?.writeText(text).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();done();});}
 function selectPrompt(n){selected=PROMPTS.find(p=>p.n===n);$("builder").open=true;updateBuilder();$("builder").scrollIntoView({behavior:"smooth",block:"center"});}
 function updateBuilder(){
- const base=selected?selected.x:"Pick a prompt card, then add your context here.";
+ const base=selected?selected.x:"Select a prompt to begin.";
  const ctx=$("ctx").value.trim(),limits=$("limits").value.trim(),dod=$("dod").value.trim();
  $("built").textContent=selected?`${base}
 
 Context:
-${ctx||"[add relevant files, links, logs, screenshots, or ticket details]"}
+${ctx||"[files, links, logs, ticket details]"}
 
 Constraints:
-${limits||"[scope limits, dependencies, APIs, data safety, style requirements]"}
+${limits||"[scope limits, dependencies, style requirements]"}
 
 Definition of done:
-${dod||"[tests/checks to run, docs to update, output expected]"}
-
-Before acting, restate the plan, flag ambiguities, and stop for confirmation if the change is breaking, destructive, or broadens access.`:base;
+${dod||"[tests to run, docs to update]"}`:base;
 }
 function copyBuilt(btn){copyText($("built").textContent,btn)}
 function copyVisible(){const md=filtered().map(p=>`### #${p.n} ${p.t}\nWhen: ${p.u}\nTags: ${p.g.map(x=>"#"+x).join(" ")}\n\n${p.x}`).join("\n\n---\n\n");copyText(md)}

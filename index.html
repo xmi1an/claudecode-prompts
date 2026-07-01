@@ -11,9 +11,7 @@
 <div class="app">
   <aside class="side" id="side">
     <div class="brand">
-      <span class="badge">2026 expanded</span>
       <h1>Claude Code <em>Prompts</em></h1>
-      <p>A practical prompt operating system for planning, building, reviewing, and shipping software with Claude Code.</p>
     </div>
     <nav class="nav" id="nav"></nav>
   </aside>
@@ -37,9 +35,9 @@
       <p class="sub" id="desc"></p>
       <div class="stats">
         <div class="stat"><b id="statPrompts">0</b><span>Total prompts</span></div>
-        <div class="stat"><b>12</b><span>Engineering categories</span></div>
-        <div class="stat"><b id="statFavs">0</b><span>Saved favorites</span></div>
-        <div class="stat"><b id="statShowing">0</b><span>Currently showing</span></div>
+        <div class="stat"><b>12</b><span>Categories</span></div>
+        <div class="stat"><b id="statFavs">0</b><span>Favorites</span></div>
+        <div class="stat"><b id="statShowing">0</b><span>Showing</span></div>
       </div>
       <div class="toolbar">
         <button class="pill" onclick="copyVisible()">Copy visible as Markdown</button>
@@ -47,26 +45,25 @@
         <button class="pill" onclick="clearFilters()">Clear filters</button>
       </div>
       <details class="builder" id="builder">
-        <summary>Prompt Builder — select any card, add context, and copy a hardened version</summary>
+        <summary>Prompt Builder</summary>
         <div class="body">
           <div class="row">
             <label>Context / files / links
-              <input id="ctx" placeholder="e.g. src/auth, issue #42, failing stack trace…" oninput="updateBuilder()">
+              <input id="ctx" placeholder="e.g. src/auth, issue #42…" oninput="updateBuilder()">
             </label>
             <label>Constraints
-              <input id="limits" placeholder="e.g. no new deps, preserve API, tests first…" oninput="updateBuilder()">
+              <input id="limits" placeholder="e.g. no new deps, preserve API…" oninput="updateBuilder()">
             </label>
           </div>
           <label>Definition of done
-            <input id="dod" placeholder="e.g. tests green, docs updated, diff summary provided…" oninput="updateBuilder()">
+            <input id="dod" placeholder="e.g. tests green, docs updated…" oninput="updateBuilder()">
           </label>
-          <div class="out" id="built">Pick a prompt card, then add your context here.</div>
+          <div class="out" id="built">Select a prompt to begin.</div>
           <button class="copy" onclick="copyBuilt(this)">Copy built prompt</button>
         </div>
       </details>
     </section>
     <section class="grid" id="grid"></section>
-    <div class="footer">Expanded from 264 to 464 prompts · offline static app · favorites, search, builder, export, keyboard shortcuts</div>
   </main>
 </div>
 <script src="data.js"></script>
